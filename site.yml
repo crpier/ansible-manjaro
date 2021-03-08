@@ -53,7 +53,7 @@
           - pynvim
           - neovim
         # create a username var
-        virtualenv: /home/cris/.pynvim3
+        virtualenv: /home/{{ user.name }}/.pynvim3
     - name: I like fish to be in /usr/local/bin
       file:
         dest: /usr/local/bin/fish
@@ -66,13 +66,13 @@
       ignore_errors: yes
     - name: create Monego font directory
       file:
-        path: /home/cris/.fonts/m
+        path: /home/{{ user.name }}/.fonts/m
         state: directory
       when: monego_installed.stdout == ""
     - name: Download Monego font
       get_url:
         url: https://github.com/cseelus/monego/raw/master/Monego-Nerd-Font/Monego%20Regular%20Nerd%20Font.otf
-        dest: /home/cris/.fonts/m/Monego_Regular_Nerd_Font.otf
+        dest: /home/{{ user.name }}/.fonts/m/Monego_Regular_Nerd_Font.otf
       when: monego_installed.stdout == ""
     - name: Install Monego font
       shell:
@@ -80,12 +80,15 @@
       when: monego_installed.stdout == ""
     - name: Generate ssh key
       community.crypto.openssh_keypair:
-        path: /home/cris/.ssh/id_rsa
+        path: /home/{{ user.name }}/.ssh/id_rsa
     - name: install neovim for npm
       npm:
         name: neovim
         global: yes
       become: true
+    - name: create .vim dir
+      file:
+        path: /home/{{ user.name }}/.vim
+        state: directory
 
-# TODO handle wallpaper. ATM it's in /home/cris/Downloads. Should be in something like /usr. Setting is in .config/plasmarc and .config/plasmashellrc
 # TODO make sure the .vim dir exists
