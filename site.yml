@@ -33,8 +33,7 @@
     - name: install vimplug for neovim
       get_url:
         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        # TODO username var
-        dest: '/home/{{ user.name }}/.local/share/nvim/site/autoload/plug.vim'
+        dest: /home/{{ user.name }}/.local/share/nvim/site/autoload/plug.vim
     - name: pip packages
       pip:
         name:
@@ -44,7 +43,6 @@
         name:
           - pynvim
           - neovim
-        # TODO create a username var
         virtualenv: /home/cris/.pynvim
         virtualenv_python: python2
     - name: neovim python3
@@ -91,4 +89,3 @@
         path: /home/{{ user.name }}/.vim
         state: directory
 
-# TODO make sure the .vim dir exists
