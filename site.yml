@@ -16,6 +16,7 @@
           - tmux
           - xclip
           # required for ergodox wally
+          # TODO maybe I could use wally-cli????
           - webkit2gtk
           - kitty
           - ripgrep
@@ -53,7 +54,6 @@
         name:
           - pynvim
           - neovim
-        # create a username var
         virtualenv: /home/{{ user.name }}/.pynvim3
     - name: I like fish to be in /usr/local/bin
       file:
@@ -94,4 +94,3 @@
 
 # TODO install gocode
 # TODO install npm packages like @angular/cli
-# TODO install wally
