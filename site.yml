@@ -19,6 +19,9 @@
           - webkit2gtk
           - kitty
           - ripgrep
+          - gcc
+          - make
+          - fakeroot
       become: true
     - name: install neovim
       get_url:
@@ -89,3 +92,6 @@
         path: /home/{{ user.name }}/.vim
         state: directory
 
+# TODO install gocode
+# TODO install npm packages like @angular/cli
+# TODO install wally
