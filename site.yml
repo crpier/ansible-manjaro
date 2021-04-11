@@ -1,96 +1,96 @@
 ---
 - hosts: localhost
   tasks:
-    - name: Install vim lol
-      pacman:
-        name:
-          - nodejs
-          - npm
-          - yay
-          - vim
-          - fish  
-          - xdotool
-          - python2
-          - python2-pip
-          - python-pip
-          - tmux
-          - xclip
-          # required for ergodox wally
-          # TODO maybe I could use wally-cli????
-          - webkit2gtk
-          - kitty
-          - ripgrep
-          - gcc
-          - make
-          - fakeroot
-      become: true
-    - name: install neovim
-      get_url:
-        url: https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-        dest: /usr/local/bin/nvim
-        mode: '755'
-      become: true
-    - name: neovim autoload directory
-      file:
-        path: /home/cris/.local/share/nvim/site/autoload
-        state: directory
-    - name: install vimplug for neovim
-      get_url:
-        url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        dest: /home/{{ user.name }}/.local/share/nvim/site/autoload/plug.vim
-    - name: pip packages
-      pip:
-        name:
-          - virtualenv
-    - name: neovim python2
-      pip:
-        name:
-          - pynvim
-          - neovim
-        virtualenv: /home/cris/.pynvim
-        virtualenv_python: python2
-    - name: neovim python3
-      pip:
-        name:
-          - pynvim
-          - neovim
-        virtualenv: /home/{{ user.name }}/.pynvim3
-    - name: I like fish to be in /usr/local/bin
-      file:
-        dest: /usr/local/bin/fish
-        src: /usr/bin/fish
-        state: link
-      become: true
-    - name: check if Monego fonts is installed
-      shell: fc-list | grep Monego
-      register: monego_installed
-      ignore_errors: yes
-    - name: create Monego font directory
-      file:
-        path: /home/{{ user.name }}/.fonts/m
-        state: directory
-      when: monego_installed.stdout == ""
-    - name: Download Monego font
-      get_url:
-        url: https://github.com/cseelus/monego/raw/master/Monego-Nerd-Font/Monego%20Regular%20Nerd%20Font.otf
-        dest: /home/{{ user.name }}/.fonts/m/Monego_Regular_Nerd_Font.otf
-      when: monego_installed.stdout == ""
-    - name: Install Monego font
-      shell:
-        cmd: fc-cache -f -v
-      when: monego_installed.stdout == ""
-    - name: Generate ssh key
-      community.crypto.openssh_keypair:
-        path: /home/{{ user.name }}/.ssh/id_rsa
-    - name: install neovim for npm
-      npm:
-        name: neovim
-        global: yes
-      become: true
-    - name: create .vim dir
-      file:
-        path: /home/{{ user.name }}/.vim
-        state: directory
+      - name: Install vim lol
+        pacman:
+            name:
+                - nodejs
+                - npm
+                - yay
+                - vim
+                - fish  
+                - xdotool
+                - python2
+                - python2-pip
+                - python-pip
+                - tmux
+                - xclip
+                  # required for ergodox wally
+                  # TODO maybe I could use wally-cli????
+                - webkit2gtk
+                - kitty
+                - ripgrep
+                - gcc
+                - make
+                - fakeroot
+            become: true
+                - name: install neovim
+                  get_url:
+                      url: https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+                      dest: /usr/local/bin/nvim
+                      mode: '755'
+                      become: true
+                - name: neovim autoload directory
+                  file:
+                      path: /home/cris/.local/share/nvim/site/autoload
+                      state: directory
+                - name: install vimplug for neovim
+                  get_url:
+                      url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+                      dest: /home/{{ user.name }}/.local/share/nvim/site/autoload/plug.vim
+                - name: pip packages
+                  pip:
+                      name:
+                          - virtualenv
+                          - name: neovim python2
+                            pip:
+                                name:
+                                    - pynvim
+                                    - neovim
+                                virtualenv: /home/cris/.pynvim
+                                virtualenv_python: python2
+                                    - name: neovim python3
+                                      pip:
+                                          name:
+                                              - pynvim
+                                              - neovim
+                                          virtualenv: /home/{{ user.name }}/.pynvim3
+                                              - name: I like fish to be in /usr/local/bin
+                                                file:
+                                                    dest: /usr/local/bin/fish
+                                                    src: /usr/bin/fish
+                                                    state: link
+                                                    become: true
+                                              - name: check if Monego fonts is installed
+                                                shell: fc-list | grep Monego
+                                                register: monego_installed
+                                                ignore_errors: yes
+                                              - name: create Monego font directory
+                                                file:
+                                                    path: /home/{{ user.name }}/.fonts/m
+                                                    state: directory
+                                                    when: monego_installed.stdout == ""
+                                              - name: Download Monego font
+                                                get_url:
+                                                    url: https://github.com/cseelus/monego/raw/master/Monego-Nerd-Font/Monego%20Regular%20Nerd%20Font.otf
+                                                    dest: /home/{{ user.name }}/.fonts/m/Monego_Regular_Nerd_Font.otf
+                                                    when: monego_installed.stdout == ""
+                                              - name: Install Monego font
+                                                shell:
+                                                    cmd: fc-cache -f -v
+                                                    when: monego_installed.stdout == ""
+                                              - name: Generate ssh key
+                                                community.crypto.openssh_keypair:
+                                                    path: /home/{{ user.name }}/.ssh/id_rsa
+                                              - name: install neovim for npm
+                                                npm:
+                                                    name: neovim
+                                                    global: yes
+                                                    become: true
+                                              - name: create .vim dir
+                                                file:
+                                                    path: /home/{{ user.name }}/.vim
+                                                    state: directory
 
-# TODO install gocode
-# TODO install npm packages like @angular/cli
+                                                    # TODO install gocode
+                                                    # TODO install npm packages like @angular/cli
