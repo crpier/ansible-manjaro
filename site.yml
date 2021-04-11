@@ -23,6 +23,7 @@
                 - gcc
                 - make
                 - fakeroot
+                - lazygit
             become: true
                 - name: install neovim
                   get_url:
