@@ -1,95 +1,145 @@
 ---
 - hosts: localhost
+  vars_files:
+    - vars.yaml
   tasks:
-  - name: Install vim lol
-    pacman:
-      name:
-        - nodejs
-        - npm
-        - yay
-        - vim
-        - fish  
-        - xdotool
-        - python2
-        - python2-pip
-        - python-pip
-        - tmux
-        - xclip
-        - kitty
-        - gcc
-        - make
-        - fakeroot
-        - lazygit
-    become: true
-  - name: install neovim
-    get_url:
-      url: https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
-      dest: /usr/local/bin/nvim
-      mode: '755'
-    become: true
-  - name: neovim autoload directory
-    file:
-      path: /home/cris/.local/share/nvim/site/autoload
-      state: directory
-  - name: install vimplug for neovim
-    get_url:
-      url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-      dest: /home/{{ user.name }}/.local/share/nvim/site/autoload/plug.vim
-  - name: pip packages
-    pip:
-      name:
-      - virtualenv
-  - name: neovim python2
-    pip:
-      name:
-        - pynvim
-        - neovim
-      virtualenv: /home/cris/.pynvim
-      virtualenv_python: python2
-  - name: neovim python3
-    pip:
-      name:
-        - pynvim
-        - neovim
-      virtualenv: /home/{{ user.name }}/.pynvim3
-  - name: check if Monego fonts is installed
-    shell: fc-list | grep Monego
-    register: monego_installed
-    ignore_errors: yes
-  - name: create Monego font directory
-    file:
-      path: /home/{{ user.name }}/.fonts/m
-      state: directory
-    when: monego_installed.stdout == ""
-  - name: Download Monego font
-    get_url:
-      url: https://github.com/cseelus/monego/raw/master/Monego-Nerd-Font/Monego%20Regular%20Nerd%20Font.otf
-      dest: /home/{{ user.name }}/.fonts/m/Monego_Regular_Nerd_Font.otf
-    when: monego_installed.stdout == ""
-  - name: Install Monego font
-    shell:
-      cmd: fc-cache -f -v
-    when: monego_installed.stdout == ""
-  - name: Generate ssh key
-    community.crypto.openssh_keypair:
-      path: /home/{{ user.name }}/.ssh/id_rsa
-  - name: install neovim for npm
-    npm:
-      name: neovim
-      global: yes
-  # if I have to install another npm package...I'd rather research smth else
-  - name: install angular too
-    npm:
-      name: "@angular/cli"
-      global: yes
-    become: true
-  - name: create .vim dir
-    file:
-      path: /home/{{ user.name }}/.vim
-      state: directory
-  - name: install wally-cli
-    get_url:
-      url: https://github.com/zsa/wally-cli/releases/download/2.0.0-linux/wally-cli
-      dest: /usr/local/bin/wally-cli
-      mode: '755'
-    become: true
+    - name: Set home folder
+      set_fact:
+        home: "/home/{{ user.name }}"
+
+    - name: Install useful packages
+      pacman:
+        name: "{{ pacman_packages }}"
+      become: true
+
+    - name: pip packages
+      pip:
+        name:
+          - virtualenv
+
+    - name: install some npm packages
+      npm:
+        name: "{{ item.name }}"
+        global: true
+      with_items: "{{ npm_packages }}"
+      become: true
+
+    - name: Generate ssh key
+      community.crypto.openssh_keypair:
+        path: "{{ home }}/.ssh/id_rsa"
+
+    - name: Neovim stuff
+      block:
+        - name: install neovim
+          get_url:
+            url: >
+              https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+            dest: /usr/local/bin/nvim
+            mode: '755'
+          become: true
+        - name: make sure neovim has autoload dir
+          file:
+            path: "{{ home }}/.local/share/nvim/site/autoload"
+            state: directory
+        - name: install vimplug for neovim
+          get_url:
+            url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            dest: "{{ home }}/.local/share/nvim/site/autoload/plug.vim"
+        - name: neovim python2
+          pip:
+            name:
+              - pynvim
+              - neovim
+            virtualenv: "{{ home }}/.pynvim"
+            virtualenv_python: python2
+        - name: neovim python3
+          pip:
+            name:
+              - pynvim
+              - neovim
+            virtualenv: "{{ home }}/.pynvim3"
+    - name: install neovim npm package
+      npm:
+        name: "{{ item.name }}"
+        global: true
+      with_items:
+        - name: "neovim"
+      become: true
+      tags: neovim
+
+    - name: Vim stuff
+      block:
+        - name: Install vim
+          pacman:
+            name:
+              - vim
+            state: latest
+          become: true
+        - name: make sure vim has autoload dir
+          file:
+            path: "{{ home }}/.vim/autoload"
+            state: directory
+        - name: install vimplug for vim
+          get_url:
+            url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            dest: "{{ home }}/.vim/autoload/plug.vim"
+      tags: vim
+
+    - name: check if Monego fonts is installed
+      shell: fc-list | grep Monego
+      register: monego_installed
+      ignore_errors: true
+      changed_when: false
+      tags: font
+
+    - name: Install a neat font
+      block:
+        - name: create Monego font directory
+          file:
+            path: "{{ home }}/.fonts/m"
+            state: directory
+        - name: Download Monego font
+          get_url:
+            url: >
+                  https://github.com/cseelus/monego/raw/master/Monego-Nerd-Font/Monego%20Regular%20Nerd%20Font.otf
+            dest: "{{ home }}/.fonts/m/Monego_Regular_Nerd_Font.otf"
+        - name: Install Monego font
+          shell:
+            cmd: fc-cache -f -v
+      when: monego_installed.stdout == ""
+      tags: font
+
+    - name: install wally-cli
+      get_url:
+        url: >
+              https://github.com/zsa/wally-cli/releases/download/2.0.0-linux/wally-cli
+        dest: /usr/local/bin/wally-cli
+        mode: '755'
+      become: true
+
+    - name: Create home folder structure
+      file:
+        path: "{{ home }}/{{ item }}"
+        state: directory
+      with_items: 
+        - "{{ home_folders.projects_folder }}"
+        - "{{ home_folders.tools_folder }}"
+        # It's true that additional_folders is a list
+        # But this still works, so ¯\_(ツ)_/¯
+        - "{{ home_folders.additional_folders }}"
+
+    - name: Setup dotfiles
+      block:
+        - name: Clone the dotfiles repo
+          git:
+            repo: "{{ dotfiles_data.repo_url }}" 
+            dest: "{{ home }}/{{ dotfiles_data.folder_name }}"
+      tags: dotfiles
+
+    - name: Setup dotfiles
+      block:
+        - name: Clone the utils repo
+          git:
+            repo: "{{ utils_data.repo_url }}" 
+            dest: "{{ home }}/{{ utils_data.folder_name }}"
+      tags: dotfiles
