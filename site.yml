@@ -143,5 +143,18 @@
           when: dotfiles.changed
       tags: dotfiles
 
+    - name: Setup private dotfiles
+      block:
+        - name: Clone the private dotfiles repo
+          git:
+            repo: "{{ private_dotfiles_url }}"
+            dest: "{{ home }}/.local/utils"
+            update: false
+          register: private_dotfiles
+        - name: Deploy dotfiles
+          shell: "{{ home }}/.local/utils/laptop/deploy.sh"
+          when: private_dotfiles.changed
+      tags: dotfiles, private
+
       # TODO install go in Tools/go, the config.fish expects it there
       # TODO find role to install docker
