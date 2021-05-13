@@ -156,15 +156,3 @@
           when: private_dotfiles.changed
       tags: dotfiles, private
 
-    - name: install go
-      include_role: 
-        name: gantsign.golang
-      vars:
-        golang_gopath: "{{ home }}/{{ home_folders.tools_folder }}/go"
-
-    - name: install docker
-      include_role: 
-        name: geerlingguy.docker
-        apply: 
-          become: true
-
