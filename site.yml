@@ -17,17 +17,6 @@
         name:
           - virtualenv
 
-    - name: install some npm packages
-      npm:
-        name: "{{ item.name }}"
-        global: true
-      with_items: "{{ npm_packages }}"
-      become: true
-
-    - name: Generate ssh key
-      community.crypto.openssh_keypair:
-        path: "{{ home }}/.ssh/id_rsa"
-
     - name: Neovim stuff
       block:
         - name: install neovim

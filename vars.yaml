@@ -1,0 +1,22 @@
+---
+user:
+  name: tiannaru
+
+pacman_packages:
+  - neovim
+  - fish
+  - tmux
+  - xclip
+  - npm
+
+home_folders:
+  projects_folder: Projects
+  tools_folder: Tools
+  additional_folders:
+    - VMs
+
+private_dotfiles_url: git@github.com:tiannaru/utils.git
+dotfiles_url: git@github.com:tiannaru/dotfiles.git
+
+npm_packages:
+  - pyright
