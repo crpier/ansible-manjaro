@@ -3,12 +3,23 @@ user:
   name: tiannaru
 
 pacman_packages:
-  - neovim
   - fish
   - tmux
   - xclip
   - npm
+  - python2
+  - python2-pip
+  - flameshot
+  - gtk2 
+  - gtk3
+  - pasystray
+  - feh
+  - skippy-xd
+  - mpv
+  - pulseaudio
 
+yay_packages:
+  - xbanish
 home_folders:
   projects_folder: Projects
   tools_folder: Tools
@@ -17,6 +28,3 @@ home_folders:
 
 private_dotfiles_url: git@github.com:tiannaru/utils.git
 dotfiles_url: git@github.com:tiannaru/dotfiles.git
-
-npm_packages:
-  - pyright
