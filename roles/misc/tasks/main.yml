@@ -1,0 +1,7 @@
+- name: install wally-cli
+  get_url:
+    url: https://github.com/zsa/wally-cli/releases/download/2.0.0-linux/wally-cli
+    dest: /usr/local/bin/wally-cli
+    mode: '755'
+  become: true
+

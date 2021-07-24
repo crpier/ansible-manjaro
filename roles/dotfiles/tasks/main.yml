@@ -1,0 +1,18 @@
+# TODO this should be an independent role in the dotfiles repo
+- name: Clone the dotfiles repo
+  git:
+    repo: "{{ dotfiles_url }}"
+    dest: "{{ home }}/.local/dotfiles"
+    update: false
+  register: dotfiles
+
+- name: install dependencies
+  pacman:
+    name: "{{ item }}"
+  loop: "lookup ('file', {{ home }}/.local/dotfiles/programs/.pacman.list)"
+
+- name: Deploy dotfiles
+  shell:
+    cmd: "{{ home }}/.dotfiles/deploy.sh"
+    chdir: "{{ home }}./dotfiles"
+  when: dotfiles.changed

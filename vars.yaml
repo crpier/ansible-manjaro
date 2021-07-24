@@ -1,29 +1,41 @@
 ---
-user:
-  name: tiannaru
+user: cris
 
 pacman_packages:
+  - bat
+  - fd
+  - feh
   - fish
-  - tmux
-  - xclip
-  - npm
-  - python2
-  - python2-pip
+  - fish
   - flameshot
+  - fzf
   - gtk2 
   - gtk3
-  - pasystray
-  - feh
-  - skippy-xd
   - mpv
+  - npm
+  - pasystray
   - pulseaudio
+  - python2
+  - python2-pip
+  - ripgrep
+  - skippy-xd
+  - tmux
+  - xclip
+  - yarn
+  - yay
 
-yay_packages:
-  - xbanish
-home_folders:
-  projects_folder: Projects
-  tools_folder: Tools
-  additional_folders:
+pip_packages:
+  - virtualenv
+  - black
+  - ranger
+  - yamllint
+  - ansible-lint
+
+aur_packages:
+  - otf-monego-git
+
+repos_folder: Projects
+additional_folders:
     - VMs
 
 private_dotfiles_url: git@github.com:tiannaru/utils.git

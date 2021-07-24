@@ -1,0 +1,44 @@
+- name: Neovim stuff
+  block:
+    - name: install latest neovim
+      get_url:
+        url: >
+          https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+        dest: /usr/local/bin/nvim
+        mode: '755'
+        become: true
+
+    - name: make sure neovim has autoload dir
+      file:
+        path: "{{ home }}/.local/share/nvim/site/autoload"
+        state: directory
+    - name: install vimplug for neovim
+      get_url:
+        url: >
+          https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        dest: "{{ home }}/.local/share/nvim/site/autoload/plug.vim"
+
+    - name: neovim python2
+      pip:
+        name:
+          - pynvim
+          - neovim
+        virtualenv: "{{ home }}/.pynvim"
+        virtualenv_python: python2
+
+    - name: neovim python3
+      pip:
+        name:
+          - pynvim
+          - neovim
+        virtualenv: "{{ home }}/.pynvim3"
+
+    - name: install neovim npm package
+      npm:
+        name: "{{ item.name }}"
+        global: true
+      with_items:
+        - name: "neovim"
+      become: true
+      tags: neovim
+
