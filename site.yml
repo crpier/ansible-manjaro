@@ -2,10 +2,6 @@
 - hosts: localhost
   vars_files:
     - vars.yaml
-  tasks:
-    - name: Set home folder
-      set_fact:
-        home: "/home/{{ user.name }}"
   roles:
     - basics
     - lunarvim

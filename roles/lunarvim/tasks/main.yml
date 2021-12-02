@@ -6,7 +6,7 @@
           https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
         dest: /usr/local/bin/nvim
         mode: '755'
-        become: true
+      become: true
 
     - name: make sure neovim has autoload dir
       file:

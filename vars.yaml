@@ -6,7 +6,7 @@ pacman_packages:
   - fd
   - feh
   - fish
-  - fish
+  - vim
   - flameshot
   - fzf
   - gtk2 
@@ -40,3 +40,6 @@ additional_folders:
 
 private_dotfiles_url: git@github.com:tiannaru/utils.git
 dotfiles_url: git@github.com:tiannaru/dotfiles.git
+
+projects_folder: Projects
+home: /home/human

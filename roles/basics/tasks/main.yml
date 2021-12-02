@@ -5,15 +5,9 @@
   become: true
 
 - name: Install useful pip packages
-  become: yes
-  become_user: {{ user }}
   pip:
-    name: "{{ pip_pacages }}"
+    name: "{{ pip_packages }}"
     extra_args: --user
-
-- name: Install useful aur packages
-  aur:
-    name: "{{ aur_packages }}"
 
 - name: Create home folder structure
   file:

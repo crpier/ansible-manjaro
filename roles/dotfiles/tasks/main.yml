@@ -9,7 +9,14 @@
 - name: install dependencies
   pacman:
     name: "{{ item }}"
-  loop: "lookup ('file', {{ home }}/.local/dotfiles/programs/.pacman.list)"
+  with_items:
+    - fish
+    - fzf
+    - ranger
+    - vim
+    - tmux
+    - kitty
+  become: true
 
 - name: Deploy dotfiles
   shell:
